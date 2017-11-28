@@ -10,6 +10,7 @@ import controller.leilao.ClienteControllerLeilao;
 import controller.leilao.LanceControllerLailao;
 import controller.leilao.ProdutoControllerLeilao;
 import exceptions.lance.ValorLanceInvalidoException;
+import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.logging.Level;
@@ -20,7 +21,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import produto.Produto;
 
 /**
@@ -70,12 +70,17 @@ public class ConectToServerTest {
         }
         
         Lance lance = new Lance(cliete, produto, 10);
+        Lance lance1 = new Lance(cliete, produto, 20);
         try {
             ConnectToServer.connectToServerLanceLeilao();
             LanceControllerLailao lanceControllerLailao = LanceControllerLailao.getInstance();
             lance = lanceControllerLailao.fazerUmlance(lance);
             System.out.println(lance.getId());
+            lance1 = lanceControllerLailao.fazerUmlance(lance1);
+            System.out.println(lance1.getId());
         } catch (RemoteException | NotBoundException | ValorLanceInvalidoException ex) {
+            Logger.getLogger(ConectToServerTest.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
             Logger.getLogger(ConectToServerTest.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

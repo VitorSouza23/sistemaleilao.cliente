@@ -9,6 +9,7 @@ import exceptions.lance.ValorLanceInvalidoException;
 import java.rmi.RemoteException;
 import java.util.List;
 import lance.Lance;
+import produto.Produto;
 import rmiinterfaces.lance.ILanceLeiaoController;
 
 /**
@@ -54,5 +55,9 @@ public class LanceControllerLailao {
     
     public List<Lance> getAllLances() throws RemoteException{
         return this._lanceLeilaoController.getAlllances();
+    }
+    
+    public Lance getLanceCombaseEmUmProduto(Produto produto) throws RemoteException{
+        return this._lanceLeilaoController.getlanceComBaseEmUmProduto(produto);
     }
 }
