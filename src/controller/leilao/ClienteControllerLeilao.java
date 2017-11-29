@@ -8,6 +8,7 @@ package controller.leilao;
 import cliente.Cliente;
 import java.rmi.RemoteException;
 import rmiinterfaces.cliente.IClienteLeilaoController;
+import rmiinterfaces.lance.ILanceLeiaoController;
 
 /**
  *
@@ -50,7 +51,5 @@ public class ClienteControllerLeilao {
     public boolean removerClienteDoServidor(Cliente cliente) throws RemoteException{
         return this._clienteControllerLeilao.removerClienteDoServidor(cliente);
     }
-    
-    
     
 }

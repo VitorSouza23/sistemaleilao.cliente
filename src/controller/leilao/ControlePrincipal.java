@@ -7,6 +7,7 @@ package controller.leilao;
 
 import cliente.Cliente;
 import connection.server.ConnectToServer;
+import exceptions.lance.ValorLanceInvalidoException;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -63,5 +64,9 @@ public class ControlePrincipal {
      */
     public void setClienteAtual(Cliente _clienteAtual) {
         this._clienteAtual = _clienteAtual;
+    }
+    
+    public Lance fazerUmLance(Lance lance) throws RemoteException, ValorLanceInvalidoException{
+        return this._lanceController.fazerUmlance(lance);
     }
 }

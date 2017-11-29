@@ -7,6 +7,7 @@ package ui;
 
 import cliente.Cliente;
 import controller.leilao.ControlePrincipal;
+import exceptions.lance.ValorLanceInvalidoException;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -23,7 +24,9 @@ import produto.Produto;
  * @author Vitor
  */
 public class InterfaceDoClienteForm extends javax.swing.JFrame {
+
     private ControlePrincipal _controControlePrincipal;
+
     /**
      * Creates new form InterfaceDoClienteForm
      */
@@ -61,6 +64,8 @@ public class InterfaceDoClienteForm extends javax.swing.JFrame {
         tfTempoRestante = new javax.swing.JTextField();
         btFazerUmLance = new javax.swing.JButton();
         btSair = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        tfDonoDoLance = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -103,11 +108,6 @@ public class InterfaceDoClienteForm extends javax.swing.JFrame {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Produtos"));
 
-        ltProdutos.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         ltProdutos.setEnabled(false);
         ltProdutos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -131,6 +131,11 @@ public class InterfaceDoClienteForm extends javax.swing.JFrame {
         btFazerUmLance.setForeground(new java.awt.Color(0, 153, 0));
         btFazerUmLance.setText("Fazer um Lance!");
         btFazerUmLance.setEnabled(false);
+        btFazerUmLance.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btFazerUmLanceActionPerformed(evt);
+            }
+        });
 
         btSair.setForeground(new java.awt.Color(255, 0, 0));
         btSair.setText("Sair");
@@ -141,6 +146,11 @@ public class InterfaceDoClienteForm extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setText("Dono do lance:");
+
+        tfDonoDoLance.setDisabledTextColor(new java.awt.Color(0, 51, 255));
+        tfDonoDoLance.setEnabled(false);
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -148,16 +158,18 @@ public class InterfaceDoClienteForm extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btFazerUmLance, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                    .addComponent(btFazerUmLance, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                    .addComponent(btSair, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
-                            .addComponent(jLabel3))
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(tfLanceAtual)
-                            .addComponent(tfTempoRestante)))
-                    .addComponent(btSair, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(tfTempoRestante)
+                            .addComponent(tfDonoDoLance))))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -167,13 +179,17 @@ public class InterfaceDoClienteForm extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(tfLanceAtual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(10, 10, 10)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(tfDonoDoLance, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(tfTempoRestante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 51, Short.MAX_VALUE)
                 .addComponent(btFazerUmLance)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)
+                .addGap(45, 45, 45)
                 .addComponent(btSair)
                 .addContainerGap())
         );
@@ -252,28 +268,55 @@ public class InterfaceDoClienteForm extends javax.swing.JFrame {
             setEnableDosElementos(true);
         } catch (RemoteException ex) {
             mensagemDeErro(ex);
-            
+
         }
     }//GEN-LAST:event_btConectarActionPerformed
 
     private void ltProdutosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ltProdutosMouseClicked
-        if(evt.getClickCount() > 1){
+        if (evt.getClickCount() > 1) {
             try {
                 getProdutoDetalhes();
             } catch (RemoteException ex) {
                 mensagemDeErro(ex);
-                
+
             }
         }
         try {
             Produto produto = getProdutoSelecionado();
             Lance lance = this._controControlePrincipal.getlanceAtualDoProduto(produto);
-            this.tfLanceAtual.setText(Double.toString(lance.getValor()));
+            if (lance == null) {
+                this.tfLanceAtual.setText(Double.toString(produto.getLanceInicial()));
+                this.tfDonoDoLance.setText("-------");
+            } else {
+                this.tfLanceAtual.setText(Double.toString(lance.getValor()));
+                this.tfDonoDoLance.setText(lance.getCliente().getNome());
+            }
+
         } catch (RemoteException ex) {
             mensagemDeErro(ex);
         }
-        
+
     }//GEN-LAST:event_ltProdutosMouseClicked
+
+    private void btFazerUmLanceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btFazerUmLanceActionPerformed
+        if (this.ltProdutos.isSelectionEmpty()) {
+            mensagemDeErro(new Exception("Nenhum produto selecionado!"));
+        } else {
+            double valorLance;
+            try {
+                Produto produto = getProdutoSelecionado();
+                valorLance = Double.parseDouble(JOptionPane.showInputDialog(rootPane, "Valor do Lance:", "Fazer um Lance", JOptionPane.INFORMATION_MESSAGE));
+                Lance novoLance = new Lance(this._controControlePrincipal.getClienteAtual(), produto, valorLance);
+                novoLance = this._controControlePrincipal.fazerUmLance(novoLance);
+                if(novoLance.getId() != 0){
+                    JOptionPane.showMessageDialog(rootPane, "Lance realizado com sucesso!", "Lance realizado!", JOptionPane.INFORMATION_MESSAGE);
+                }
+
+            } catch (RemoteException | ValorLanceInvalidoException ex) {
+                mensagemDeErro(ex);
+            }
+        }
+    }//GEN-LAST:event_btFazerUmLanceActionPerformed
 
     /**
      * @param args the command line arguments
@@ -309,33 +352,33 @@ public class InterfaceDoClienteForm extends javax.swing.JFrame {
             }
         });
     }
-    
-    private void mensagemDeErro(Exception ex){
+
+    private void mensagemDeErro(Exception ex) {
         JOptionPane.showMessageDialog(rootPane, "Erro: " + ex.getMessage(), "Erro!", JOptionPane.ERROR_MESSAGE);
         ex.printStackTrace();
     }
-    
-    private void setEnableDosElementos(boolean enabled){
+
+    private void setEnableDosElementos(boolean enabled) {
         this.ltProdutos.setEnabled(enabled);
-            this.btFazerUmLance.setEnabled(enabled);
-            this.btSair.setEnabled(enabled);
-            this.btConectar.setEnabled(!enabled);
+        this.btFazerUmLance.setEnabled(enabled);
+        this.btSair.setEnabled(enabled);
+        this.btConectar.setEnabled(!enabled);
     }
-    
-    private DefaultListModel<String> converterListaDeProdutosParaDefaultListModel(List<Produto> listaDeprodutos){
+
+    private DefaultListModel<String> converterListaDeProdutosParaDefaultListModel(List<Produto> listaDeprodutos) {
         DefaultListModel<String> defaultList = new DefaultListModel<>();
         listaDeprodutos.forEach((produto) -> {
             defaultList.addElement(produto.getNome());
         });
         return defaultList;
     }
-    
-    private Produto getProdutoSelecionado() throws RemoteException{
+
+    private Produto getProdutoSelecionado() throws RemoteException {
         int index = this.ltProdutos.getSelectedIndex();
         return this._controControlePrincipal.getProduto(index);
     }
-    
-    private void getProdutoDetalhes() throws RemoteException{
+
+    private void getProdutoDetalhes() throws RemoteException {
         Produto produto = getProdutoSelecionado();
         String detalhes = "Produto: " + produto.getNome() + "\n"
                 + "\tDescrição: " + produto.getDescricao() + "\n"
@@ -350,12 +393,14 @@ public class InterfaceDoClienteForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList<String> ltProdutos;
+    private javax.swing.JTextField tfDonoDoLance;
     private javax.swing.JTextField tfLanceAtual;
     private javax.swing.JTextField tfNomeCliente;
     private javax.swing.JTextField tfTempoRestante;
